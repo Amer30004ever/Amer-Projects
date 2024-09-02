@@ -1,0 +1,6 @@
+---
+- name: "Run Docker-Compose using ansible playbook"
+  hosts: localhost
+  tasks:
+  - name: stop and remove containers
+    command: docker-compose up -d
