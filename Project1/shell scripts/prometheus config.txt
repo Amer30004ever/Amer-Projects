@@ -1,0 +1,41 @@
+edit /etc/prometheus/prometheus.yml
+
+
+global:
+  scrape_interval:     15s
+  evaluation_interval: 15s
+  scrape_timeout:      10s
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+    - targets: ['192.168.222.158:9091']
+  - job_name: 'jenkins'
+    metrics_path: /prometheus/
+    static_configs:
+    - targets: ['192.168.222.166:8080']
+
+
+
+$ sudo systemctl daemon-reload
+amer@strong-man:/etc/prometheus$ sudo systemctl restart prometheus.service
+amer@strong-man:/etc/prometheus$ sudo systemctl status prometheus.service
+
+
+in http://192.168.222.158:9091/
+change metrics
+jenkins_executor_count_value   and execute

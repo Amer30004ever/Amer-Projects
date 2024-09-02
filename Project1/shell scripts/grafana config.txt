@@ -1,0 +1,7 @@
+add new data source
+connection >> data source
+data source of prometheus:http://192.168.222.158:9091/
+
+Dashboards >> new >> import >> 9964 load >> select Prometheus Data Source
+Dashboard : Jenkins: Performance and Health Overview
+choose prometheus Data source

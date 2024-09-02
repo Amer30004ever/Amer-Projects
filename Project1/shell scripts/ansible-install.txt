@@ -1,0 +1,16 @@
+Install Ansible: Ensure Ansible is installed on the Jenkins agent. You can do this by connecting to the agent and installing Ansible using the package manager for your operating system. For example, on a Debian/Ubuntu-based system, you can use:
+
+bash
+Copy code
+sudo apt update
+sudo apt install ansible
+On a Red Hat-based system, use:
+
+bash
+Copy code
+sudo yum install ansible
+Verify PATH: Check that the directory containing the ansible-playbook executable is included in the PATH environment variable for the Jenkins user or the system running the Jenkins agent. You can do this by logging in as the Jenkins user and executing:
+
+bash
+Copy code
+which ansible-playbook

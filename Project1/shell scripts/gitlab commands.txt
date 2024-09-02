@@ -1,0 +1,44 @@
+Verify that the GitLab services are up and running by executing the command:
+----------------------------------------------------------------------------
+sudo gitlab-ctl status
+If any services are not running, start them with:
+-------------------------------------------------
+sudo gitlab-ctl start
+
+Access GitLab via Web Browser:
+-----------------------------
+Open a web browser on your local machine.
+Enter the external URL you specified during installation in the address bar (e.g., https://gitlab.example.com).
+Certificate Warning (if applicable):
+
+If you are using a self-signed certificate or if the DNS is not yet fully propagated, your browser might display a security warning. You can proceed by accepting the risk or adding an exception.
+Login to GitLab:
+---------------
+The login page will prompt you for a username and password.
+Use root as the username.
+For the password, if you didn’t specify one during installation, it will be stored in a file. Retrieve it using:
+-----------------------------------------------------------------------------------------
+sudo cat /etc/gitlab/initial_root_password
+This file contains the initial root password, which is valid for 24 hours.
+Post-login Configuration:
+
+After logging in for the first time, you will be prompted to change the password.
+Update the password and proceed with any additional configuration steps recommended by GitLab.
+Troubleshooting:
+
+If you encounter issues accessing GitLab, ensure that your server’s firewall or network settings allow inbound connections on the port GitLab is using (usually port 443 for HTTPS or port 80 for HTTP).
+Check the DNS settings to confirm that the external URL is correctly pointed to your server's IP address.
+
+lsof lists open files and can be used to see which processes are using which ports.
+
+sudo lsof -i :80
+
+curl -I http://localhost:80
+
+HTTP/1.1 301 Moved Permanently
+Server: nginx
+Date: Tue, 13 Aug 2024 21:47:47 GMT
+Content-Type: text/html
+Content-Length: 162
+Connection: keep-alive
+Location: https://gitlab.example.com:443/
