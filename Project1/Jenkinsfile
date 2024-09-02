@@ -1,0 +1,18 @@
+pipeline {
+    agent any
+    environment {
+        DOCKERHUB_USERNAME = credentials('dockerhub_credentials').username
+        DOCKERHUB_PASSWORD = credentials('dockerhub_credentials').password
+    }
+    stages {
+        stage('Build and Deploy') {
+            steps {
+                sh '''
+                ansible-playbook ansible-playbook.yml \
+                    -e dockerhub_username=$DOCKERHUB_USERNAME \
+                    -e dockerhub_password=$DOCKERHUB_PASSWORD
+                '''
+            }
+        }
+    }
+}
