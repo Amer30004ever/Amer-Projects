@@ -27,8 +27,9 @@
 
     - name: Log in to DockerHub
       docker_login:
-        username: "{{ dockerhub_username }}"
-        password: "{{ dockerhub_password }}"
+        username: "{{ lookup('env', 'dockerhub_username') }}"
+        password: "{{ lookup('env', 'dockerhub_password') }}"
+
 
     - name: Push the Docker image to DockerHub
       command: docker push amer30004ever/proj
