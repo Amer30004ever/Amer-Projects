@@ -3,8 +3,8 @@
   hosts: localhost
   connection: local
   vars:
-    dockerhub_username: "{{ lookup('env', 'dockerhub_username') }}"
-    dockerhub_password: "{{ lookup('env', 'dockerhub_password') }}"
+    dockerhub_username: "{{ dockerhub_username }}"
+    dockerhub_password: "{{ dockerhub_password }}"
   tasks:
     - name: Stop current running container if it exists
       docker_container:

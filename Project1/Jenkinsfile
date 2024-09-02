@@ -9,8 +9,8 @@ pipeline {
             steps {
                 sh '''
                 ansible-playbook ansible-playbook.yml \
-                    -e dockerhub_username=$DOCKERHUB_USERNAME \
-                    -e dockerhub_password=$DOCKERHUB_PASSWORD
+                    -e "dockerhub_username=$DOCKERHUB_USERNAME" \
+                    -e "dockerhub_password=$DOCKERHUB_PASSWORD"
                 '''
             }
         }
