@@ -5,12 +5,18 @@ pipeline {
         DOCKERHUB_PASSWORD = credentials('dockerhub_credentials').password
     }
     stages {
+        stage('Docker Login') {
+            steps {
+                script {
+                    // Login to DockerHub
+                    sh "echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin"
+                }
+            }
+        }
         stage('Build and Deploy') {
             steps {
                 sh '''
-                ansible-playbook ansible-playbook.yml \
-                    -e dockerhub_username=$DOCKERHUB_USERNAME \
-                    -e dockerhub_password=$DOCKERHUB_PASSWORD
+                ansible-playbook ansible-playbook.yml
                 '''
             }
         }

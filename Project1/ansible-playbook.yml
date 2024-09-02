@@ -2,9 +2,6 @@
 - name: "Build and run a Docker container"
   hosts: localhost
   connection: local
-  vars:
-    dockerhub_username: "{{ dockerhub_username }}"
-    dockerhub_password: "{{ dockerhub_password }}"
   tasks:
     - name: Stop current running container if it exists
       docker_container:
@@ -24,12 +21,6 @@
 
     - name: Build Docker image using the Dockerfile
       command: docker build -t amer30004ever/proj .
-
-    - name: Log in to DockerHub
-      docker_login:
-        username: "{{ lookup('env', 'dockerhub_username') }}"
-        password: "{{ lookup('env', 'dockerhub_password') }}"
-
 
     - name: Push the Docker image to DockerHub
       command: docker push amer30004ever/proj
