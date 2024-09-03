@@ -24,7 +24,6 @@
 
     - name: Push the Docker image to DockerHub
       command: docker push amer30004ever/proj
-        delay: 600
 
     - name: Run the Docker container
       docker_container:
