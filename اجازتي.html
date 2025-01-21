@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>مسجل الإجازات</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: right;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      margin: 0;
+    }
+    .header p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #555;
+    }
+    .dashboard {
+      margin-bottom: 20px;
+    }
+    .dashboard div {
+      margin: 10px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: right;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .form-container {
+      margin-bottom: 20px;
+    }
+    .form-container input, .form-container select, .form-container button {
+      margin: 5px;
+      padding: 8px;
+    }
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+    }
+    .checkbox {
+      width: 20px;
+      height: 20px;
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+    }
+    .tabs button {
+      margin-left: 10px;
+      padding: 10px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>مسجل الإجازات</h1>
+    <p>تم التطوير بواسطة: عامر مجدي</p>
+  </div>
+
+  <!-- تبادل الصفحات -->
+  <div class="tabs">
+    <button onclick="navigateTo('main')">الصفحة الرئيسية</button>
+    <button onclick="navigateTo('add')">إضافة إجازة</button>
+    <button onclick="navigateTo('credit')">إضافة بدل راحة</button>
+  </div>
+
+  <!-- الصفحة الرئيسية -->
+  <div id="main-page" class="page active">
+    <!-- لوحة الإجازات المتبقية -->
+    <div class="dashboard">
+      <h2>الإجازات المتبقية</h2>
+      <div>الإجازات الاعتيادية المتبقية: <span id="normal-left">30</span></div>
+      <div>الإجازات العارضة المتبقية: <span id="urgent-left">7</span></div>
+      <div>بدل الراحة المتبقية: <span id="instead-left">0</span></div>
+    </div>
+
+    <!-- لوحة الإجازات المستخدمة -->
+    <div class="dashboard">
+      <h2>الإجازات المستخدمة</h2>
+      <div>الإجازات الاعتيادية المستخدمة: <span id="normal-used">0</span></div>
+      <div>الإجازات العارضة المستخدمة: <span id="urgent-used">0</span></div>
+      <div>بدل الراحة المستخدمة: <span id="instead-used">0</span></div>
+    </div>
+
+    <!-- جدول الإجازات -->
+    <h2>الإجازات</h2>
+    <button onclick="editSelectedVacancy()">تعديل المحدد</button>
+    <button onclick="deleteSelectedVacancy()">حذف المحدد</button>
+    <table id="vacancy-table">
+      <thead>
+        <tr>
+          <th>تحديد</th>
+          <th>التاريخ</th>
+          <th>اليوم</th>
+          <th>النوع</th>
+          <th>الوردية</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- الصفوف ستضاف تلقائيا -->
+      </tbody>
+    </table>
+  </div>
+
+  <!-- صفحة إضافة إجازة -->
+  <div id="add-page" class="page">
+    <h2>إضافة إجازة</h2>
+    <div class="form-container">
+      <input type="date" id="date" placeholder="التاريخ">
+      <select id="day">
+        <option value="السبت">السبت</option>
+        <option value="الأحد">الأحد</option>
+        <option value="الاثنين">الاثنين</option>
+        <option value="الثلاثاء">الثلاثاء</option>
+        <option value="الأربعاء">الأربعاء</option>
+        <option value="الخميس">الخميس</option>
+        <option value="الجمعة">الجمعة</option>
+      </select>
+      <select id="kind">
+        <option value="اعتيادي">اعتيادي</option>
+        <option value="عارضة">عارضة</option>
+        <option value="بدل الراحة">بدل الراحة</option>
+      </select>
+      <select id="shift">
+        <option value="صباح">صباح</option>
+        <option value="ظهر">ظهر</option>
+        <option value="ليل">ليل</option>
+      </select>
+      <button onclick="submitForm()">إرسال</button>
+      <button onclick="navigateTo('main')">إلغاء</button>
+    </div>
+  </div>
+
+  <!-- صفحة إضافة بدل راحة -->
+  <div id="credit-page" class="page">
+    <h2>إضافة بدل راحة</h2>
+    <div class="form-container">
+      <h3>إضافة رصيد/سبب</h3>
+      <input type="number" id="credit-value" placeholder="الرصيد">
+      <input type="text" id="reason-text" placeholder="السبب">
+      <button onclick="addCreditReason()">إضافة</button>
+    </div>
+    <div>
+      <h3>قائمة الرصيد والسبب</h3>
+      <table id="credit-reason-table">
+        <thead>
+          <tr>
+            <th>الرصيد</th>
+            <th>السبب</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- الصفوف ستضاف تلقائيا -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let vacancies = [];
+    let creditReasons = [];
+    let editIndex = null;
+
+    // الرصيد الافتراضي
+    const defaultCredits = {
+      اعتيادي: 30,
+      عارضة: 7,
+      "بدل الراحة": 0,
+    };
+
+    // عناصر اللوحة
+    const normalLeft = document.getElementById('normal-left');
+    const urgentLeft = document.getElementById('urgent-left');
+    const insteadLeft = document.getElementById('instead-left');
+    const normalUsed = document.getElementById('normal-used');
+    const urgentUsed = document.getElementById('urgent-used');
+    const insteadUsed = document.getElementById('instead-used');
+
+    // عناصر النموذج
+    const dateInput = document.getElementById('date');
+    const dayInput = document.getElementById('day');
+    const kindInput = document.getElementById('kind');
+    const shiftInput = document.getElementById('shift');
+
+    // عناصر الرصيد والسبب
+    const creditValueInput = document.getElementById('credit-value');
+    const reasonTextInput = document.getElementById('reason-text');
+
+    // الصفحات
+    const mainPage = document.getElementById('main-page');
+    const addPage = document.getElementById('add-page');
+    const creditPage = document.getElementById('credit-page');
+
+    // حفظ البيانات في localStorage
+    function saveToLocalStorage() {
+      localStorage.setItem('vacancies', JSON.stringify(vacancies));
+      localStorage.setItem('creditReasons', JSON.stringify(creditReasons));
+    }
+
+    // استرجاع البيانات من localStorage
+    function loadFromLocalStorage() {
+      const vacanciesData = localStorage.getItem('vacancies');
+      const creditReasonsData = localStorage.getItem('creditReasons');
+      if (vacanciesData) {
+        vacancies = JSON.parse(vacanciesData);
+      }
+      if (creditReasonsData) {
+        creditReasons = JSON.parse(creditReasonsData);
+      }
+    }
+
+    // التنقل بين الصفحات
+    function navigateTo(page) {
+      mainPage.classList.remove('active');
+      addPage.classList.remove('active');
+      creditPage.classList.remove('active');
+
+      if (page === 'main') {
+        mainPage.classList.add('active');
+        updateDashboard();
+        renderTable();
+      } else if (page === 'add') {
+        addPage.classList.add('active');
+        clearForm();
+      } else if (page === 'credit') {
+        creditPage.classList.add('active');
+        renderCreditReasonTable();
+      }
+    }
+
+    // مسح النموذج
+    function clearForm() {
+      dateInput.value = '';
+      dayInput.value = 'السبت';
+      kindInput.value = 'اعتيادي';
+      shiftInput.value = 'صباح';
+    }
+
+    // إرسال النموذج لإضافة إجازة
+    function submitForm() {
+      const vacancy = {
+        date: dateInput.value,
+        day: dayInput.value,
+        kind: kindInput.value,
+        shift: shiftInput.value,
+      };
+
+      vacancies.push(vacancy);
+      saveToLocalStorage();
+      navigateTo('main');
+    }
+
+    // إضافة رصيد/سبب
+    function addCreditReason() {
+      const credit = creditValueInput.value;
+      const reason = reasonTextInput.value;
+      if (credit && reason) {
+        creditReasons.push({ credit, reason });
+        saveToLocalStorage();
+        renderCreditReasonTable();
+        creditValueInput.value = '';
+        reasonTextInput.value = '';
+      }
+    }
+
+    // عرض جدول الرصيد والسبب
+    function renderCreditReasonTable() {
+      const tbody = document.querySelector('#credit-reason-table tbody');
+      tbody.innerHTML = '';
+
+      creditReasons.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.credit}</td>
+          <td>${item.reason}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // تعديل الإجازة المحددة
+    function editSelectedVacancy() {
+      const selectedIndex = getSelectedVacancyIndex();
+      if (selectedIndex !== null) {
+        navigateTo('add');
+        populateForm(vacancies[selectedIndex]);
+        editIndex = selectedIndex;
+      } else {
+        alert('الرجاء تحديد إجازة للتعديل.');
+      }
+    }
+
+    // حذف الإجازة المحددة
+    function deleteSelectedVacancy() {
+      const selectedIndex = getSelectedVacancyIndex();
+      if (selectedIndex !== null) {
+        vacancies.splice(selectedIndex, 1);
+        saveToLocalStorage();
+        updateDashboard();
+        renderTable();
+      } else {
+        alert('الرجاء تحديد إجازة للحذف.');
+      }
+    }
+
+    // الحصول على الفهرس المحدد
+    function getSelectedVacancyIndex() {
+      const checkboxes = document.querySelectorAll('.checkbox:checked');
+      if (checkboxes.length === 1) {
+        return Array.from(checkboxes).map(cb => cb.dataset.index)[0];
+      }
+      return null;
+    }
+
+    // تحديث اللوحة
+    function updateDashboard() {
+      const normalCount = vacancies.filter(v => v.kind === 'اعتيادي').length;
+      const urgentCount = vacancies.filter(v => v.kind === 'عارضة').length;
+      const insteadCount = vacancies.filter(v => v.kind === 'بدل الراحة').length;
+
+      normalLeft.textContent = defaultCredits.اعتيادي - normalCount;
+      urgentLeft.textContent = defaultCredits.عارضة - urgentCount;
+      insteadLeft.textContent = defaultCredits["بدل الراحة"] - insteadCount;
+      normalUsed.textContent = normalCount;
+      urgentUsed.textContent = urgentCount;
+      insteadUsed.textContent = insteadCount;
+    }
+
+    // عرض جدول الإجازات
+    function renderTable() {
+      const tbody = document.querySelector('#vacancy-table tbody');
+      tbody.innerHTML = '';
+
+      vacancies.forEach((vacancy, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td><input type="checkbox" class="checkbox" data-index="${index}"></td>
+          <td>${vacancy.date}</td>
+          <td>${vacancy.day}</td>
+          <td>${vacancy.kind}</td>
+          <td>${vacancy.shift}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    // تحميل البيانات عند بدء التشغيل
+    window.onload = function () {
+      loadFromLocalStorage();
+      updateDashboard();
+      renderTable();
+      renderCreditReasonTable();
+    };
+  </script>
+</body>
+</html>
